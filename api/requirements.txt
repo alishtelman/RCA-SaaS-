@@ -1,0 +1,12 @@
+fastapi
+uvicorn[standard]
+psycopg[binary]
+pgvector
+sentence-transformers
+numpy
+pandas
+openpyxl
+requests
+jinja2
+python-dotenv
+python-multipart
