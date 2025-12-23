@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+
+# Env
+.env
+
+# Models (LLM)
+models/
+*.gguf
+
+# Data
+data/db/
+data/new_tickets/
+
+# Logs
+*.log
+
+# OS / IDE
+.DS_Store
+.vscode/

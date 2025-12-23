@@ -10,3 +10,6 @@ requests
 jinja2
 python-dotenv
 python-multipart
+
+# llama.cpp backend (GGUF local)
+llama-cpp-python==0.3.7

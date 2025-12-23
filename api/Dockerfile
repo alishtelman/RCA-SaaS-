@@ -3,19 +3,20 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
+# нужно для llama-cpp-python, если будет сборка из исходников
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential cmake \
+    && rm -rf /var/lib/apt/lists/*
+
 # 1) Ставим Python-зависимости
 COPY api/requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 2) Копируем код по папкам (быстрее кэшируется и не тащим лишнее)
+# 2) Копируем код по папкам
 COPY api /app/api
 COPY retriever /app/retriever
 COPY llm /app/llm
 COPY utils /app/utils
-
-# (если есть другие необходимые папки/файлы — добавь их аналогично)
-# COPY data /app/data
-# COPY configs /app/configs
 
 ENV PYTHONPATH=/app \
     PYTHONUNBUFFERED=1

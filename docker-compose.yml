@@ -26,6 +26,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./data/new_tickets:/data/new_tickets:ro
+      - ./models:/app/models:ro
     healthcheck:
       test: ["CMD-SHELL", "curl -fsS http://localhost:8080/readyz || exit 1"]
       interval: 15s
@@ -46,3 +47,14 @@ services:
     depends_on:
       - api
 
+  ui:
+    build:
+      context: .
+      dockerfile: ui/Dockerfile
+    container_name: rag-ui
+    environment:
+      - API_URL=http://rag-api:8080
+    ports:
+      - "8501:8501"
+    depends_on:
+      - api
