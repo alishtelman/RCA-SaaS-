@@ -1,6 +1,7 @@
 # retriever/hybrid_search.py
 from __future__ import annotations
 
+import importlib.util
 import os
 from typing import List, Tuple, Dict, Optional
 
@@ -21,17 +22,28 @@ def get_model():
     global _model
     if _model is None:
         from sentence_transformers import SentenceTransformer
+
         _model = SentenceTransformer(EMB_MODEL, device="cpu")
     return _model
 
 
 # Если у тебя уже есть llm/rephrase.py с функцией rephrase_issue — используем её.
 # Если нет — можно временно отключить use_rephrase в search().
-try:
-    from llm.rephrase import rephrase_issue  # type: ignore
-except Exception:  # на всякий случай
-    def rephrase_issue(text: str) -> str:
-        return text
+def _load_rephrase_fn():
+    spec = importlib.util.find_spec("llm.rephrase")
+    if not spec or not spec.loader:
+        return None
+
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return getattr(module, "rephrase_issue", None)
+
+
+def _default_rephrase(text: str) -> str:
+    return text
+
+
+rephrase_issue = _load_rephrase_fn() or _default_rephrase
 
 
 def _search_with_vector(
@@ -110,10 +122,7 @@ def search(
     qvec_rephrased: Optional[List[float]] = None
 
     if use_rephrase:
-        try:
-            q_rephrased = rephrase_issue(q)
-        except Exception:
-            q_rephrased = None
+        q_rephrased = rephrase_issue(q)
 
         if q_rephrased and q_rephrased.strip() and q_rephrased.strip() != q.strip():
             qvec_rephrased = model.encode([q_rephrased], normalize_embeddings=True)[0].tolist()
