@@ -1,24 +1,31 @@
 # api/main.py
 from __future__ import annotations
 
+import importlib.util
 import os
-from typing import List, Tuple, Any
-from fastapi import HTTPException
 from fastapi import FastAPI, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse
 
-from retriever.hybrid_search import search          # [(score, text), ...] или похожая структура
-from llm.generator import generate                  # генерация ответа
-from api.utils.formatter import to_structured       # форматирование в 4 секции
+from retriever.hybrid_search import search
+from llm.generator import generate
+from api.utils.formatter import to_structured
 from api.manage import router as manage_router
 from api.feedback import router as feedback_router
 
-# postprocess может отсутствовать — подключим опционально
-try:
-    from api.utils.postprocess import postprocess   # доп. правки после форматтера (если нужны)
-except Exception:
-    postprocess = None  # type: ignore
+
+def _load_postprocess_func():
+    """Load optional formatter postprocessor if the module is present."""
+    spec = importlib.util.find_spec("api.utils.postprocess")
+    if not spec or not spec.loader:
+        return None
+
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return getattr(module, "postprocess", None)
+
+
+postprocess = _load_postprocess_func()
 
 APP_TITLE = os.getenv("APP_TITLE", "RAG Agent API")
 app = FastAPI(title=APP_TITLE)
@@ -26,8 +33,10 @@ app = FastAPI(title=APP_TITLE)
 # CORS (на время разработки)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], allow_credentials=True,
-    allow_methods=["*"], allow_headers=["*"],
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 FORM_HTML = """<form method='post' action='/ask' style="font-family:ui-sans-serif">
@@ -38,20 +47,23 @@ FORM_HTML = """<form method='post' action='/ask' style="font-family:ui-sans-seri
   <button type='submit'>Ask</button>
 </form>"""
 
+
 @app.get("/", response_class=HTMLResponse)
 def form_root():
     return FORM_HTML
+
 
 # важно: браузер часто открывает /ask как GET — отдадим форму, а не 500
 @app.get("/ask", response_class=HTMLResponse)
 def form_alias():
     return FORM_HTML
 
+
 @app.post("/ask")
 def ask(
     issue_text: str = Form(...),
     context_count: int = Form(20),
-    service: str | None = Form(None)
+    service: str | None = Form(None),
 ):
     """
     1) Ищем контекст (RAG)
@@ -122,14 +134,16 @@ def ask(
         }
     )
 
+
 @app.get("/healthz")
 def healthz():
     return {"ok": True}
+
 
 @app.get("/readyz")
 def readyz():
     return {"ready": True}
 
-app.include_router(manage_router)
-app.include_router(feedback_router)                  # НОВОЕ
 
+app.include_router(manage_router)
+app.include_router(feedback_router)
