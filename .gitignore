@@ -9,6 +9,7 @@ models/
 data/db/
 data/db_old_1/
 data/new_tickets/
+data/raw/_bad/
 
 # python
 __pycache__/
