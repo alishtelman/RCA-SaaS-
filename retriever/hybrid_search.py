@@ -15,6 +15,41 @@ TABLE = os.getenv("RETR_TABLE", "documents")
 _model = None  # ленивое кэширование
 
 
+def ensure_schema(conn: psycopg.Connection) -> None:
+    """Создаёт таблицу для документов, если её ещё нет."""
+
+    model = get_model()
+    dim = int(model.get_sentence_embedding_dimension())
+
+    with conn.cursor() as cur:
+        cur.execute("CREATE EXTENSION IF NOT EXISTS vector;")
+        cur.execute(
+            f"""
+            CREATE TABLE IF NOT EXISTS {TABLE} (
+              id         bigserial PRIMARY KEY,
+              issue_key  text,
+              service    text,
+              snippet    text,
+              text_chunk text,
+              text_hash  text UNIQUE,
+              embedding  vector({dim}),
+              created_at timestamptz DEFAULT now()
+            );
+            """
+        )
+        cur.execute(
+            f"CREATE INDEX IF NOT EXISTS idx_{TABLE}_issue_key ON {TABLE}(issue_key);"
+        )
+        cur.execute(
+            f"""
+            CREATE INDEX IF NOT EXISTS idx_{TABLE}_embedding
+            ON {TABLE}
+            USING ivfflat (embedding vector_l2_ops)
+            WITH (lists = 100);
+            """
+        )
+
+
 def get_model():
     """
     Лениво загружаем sentence-transformers, чтобы контейнер стартовал быстро.
@@ -130,6 +165,8 @@ def search(
     combined: Dict[str, Dict[str, object]] = {}
 
     with psycopg.connect(DB_URL) as conn:
+        ensure_schema(conn)
+
         # Поиск по оригинальному запросу
         rows_orig = _search_with_vector(conn, qvec_orig, k_sql, service)
 
