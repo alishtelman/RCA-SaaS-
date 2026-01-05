@@ -5,7 +5,7 @@ WORKDIR /app
 
 # нужно для llama-cpp-python, если будет сборка из исходников
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential cmake \
+    build-essential cmake git \
     && rm -rf /var/lib/apt/lists/*
 
 # 1) Ставим Python-зависимости
