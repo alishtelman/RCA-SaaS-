@@ -297,11 +297,11 @@ def main() -> None:
 
         if c1.button("👍 Полезно", use_container_width=True, disabled=disabled_after_success, key="btn_helpful"):
             do_send_feedback(True)
-            st.experimental_rerun()
+            st.rerun()
 
         if c2.button("👎 Не полезно", use_container_width=True, disabled=disabled_after_success, key="btn_not_helpful"):
             do_send_feedback(False)
-            st.experimental_rerun()
+            st.rerun()
 
         st.caption("Feedback пишется в таблицу Postgres: public.feedback")
 
