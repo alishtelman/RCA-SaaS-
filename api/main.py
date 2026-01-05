@@ -72,6 +72,12 @@ def ask(
     4) (опц.) postprocess
     5) Возвращаем предсказуемый JSON
     """
+    if not issue_text or not issue_text.strip():
+        return JSONResponse(
+            status_code=400,
+            content={"error": "empty_issue_text", "message": "issue_text не должен быть пустым"},
+        )
+
     # 1) Поиск контекста
     try:
         # ожидаем формат от search: (issue_key, snippet, score)
