@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import importlib.util
 import os
-from typing import List, Tuple, Dict, Optional
+from typing import Dict, List, Optional, Tuple
 
 import psycopg
 
@@ -13,6 +13,11 @@ TOP_K_DEFAULT = int(os.getenv("TOP_K", 5))
 TABLE = os.getenv("RETR_TABLE", "documents")
 
 _model = None  # ленивое кэширование
+
+
+class NoDocumentsError(RuntimeError):
+    """Выбрасывается, когда в таблице нет ни одного документа."""
+
 
 
 def ensure_schema(conn: psycopg.Connection) -> None:
@@ -48,6 +53,13 @@ def ensure_schema(conn: psycopg.Connection) -> None:
             WITH (lists = 100);
             """
         )
+
+
+def _count_documents(conn: psycopg.Connection) -> int:
+    with conn.cursor() as cur:
+        cur.execute(f"SELECT COUNT(*) FROM {TABLE};")
+        res = cur.fetchone()
+        return int(res[0]) if res else 0
 
 
 def get_model():
@@ -166,6 +178,12 @@ def search(
 
     with psycopg.connect(DB_URL) as conn:
         ensure_schema(conn)
+
+        if _count_documents(conn) == 0:
+            raise NoDocumentsError(
+                "В таблице нет данных для поиска. Запусти индексатор (indexer/embeddings.py),"
+                " чтобы загрузить чанки в БД."
+            )
 
         # Поиск по оригинальному запросу
         rows_orig = _search_with_vector(conn, qvec_orig, k_sql, service)

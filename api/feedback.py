@@ -13,6 +13,22 @@ from retriever.hybrid_search import DB_URL  # используем тот же D
 router = APIRouter(prefix="/feedback", tags=["feedback"])
 
 
+def ensure_feedback_schema(conn: psycopg.Connection) -> None:
+    with conn.cursor() as cur:
+        cur.execute(
+            """
+            CREATE TABLE IF NOT EXISTS feedback (
+              id              bigserial PRIMARY KEY,
+              query           text NOT NULL,
+              answer_full_text text NOT NULL,
+              is_helpful      boolean NOT NULL,
+              comment         text,
+              used_issue_keys text[]
+            );
+            """
+        )
+
+
 class FeedbackIn(BaseModel):
     query: str = Field(..., description="Текст запроса оператора/клиента")
     answer_full_text: str = Field(..., description="Полный ответ бота (full_text из /ask)")
@@ -39,6 +55,7 @@ def create_feedback(payload: FeedbackIn):
     """
     try:
         with psycopg.connect(DB_URL) as conn, conn.cursor() as cur:
+            ensure_feedback_schema(conn)
             cur.execute(
                 """
                 INSERT INTO feedback (query, answer_full_text, is_helpful, comment, used_issue_keys)
@@ -76,6 +93,8 @@ def get_feedback_stats():
     - доля полезных ответов
     """
     with psycopg.connect(DB_URL) as conn, conn.cursor() as cur:
+        ensure_feedback_schema(conn)
+
         cur.execute("SELECT COUNT(*) FROM feedback;")
         total = cur.fetchone()[0]
 

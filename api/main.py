@@ -7,7 +7,7 @@ from fastapi import FastAPI, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse
 
-from retriever.hybrid_search import search
+from retriever.hybrid_search import NoDocumentsError, search
 from llm.generator import generate
 from api.utils.formatter import to_structured
 from api.manage import router as manage_router
@@ -89,6 +89,11 @@ def ask(
         context_chunks = [str(r[1]) for r in results]
         context = "\n\n---\n\n".join(context_chunks)
 
+    except NoDocumentsError as e:
+        return JSONResponse(
+            status_code=404,
+            content={"error": "no_documents", "message": str(e)},
+        )
     except Exception as e:
         return JSONResponse(
             status_code=500,
