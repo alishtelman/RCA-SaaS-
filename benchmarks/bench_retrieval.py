@@ -77,11 +77,13 @@ def bench_table(model_name, table, db_url, k, eval_path):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--db", default="postgresql://rag:ragpass@localhost:5432/ragdb")
+    ap.add_argument("--db", default=os.getenv("DB_URL"))
     ap.add_argument("--k", type=int, default=5)
     ap.add_argument("--eval", default="eval/queries.jsonl")
     ap.add_argument("--models", nargs="+", required=True, help="Pairs: model::table")
     args = ap.parse_args()
+    if not args.db:
+        ap.error("DB_URL must be set via --db or DB_URL environment variable")
 
     rows = []
     for pair in args.models:

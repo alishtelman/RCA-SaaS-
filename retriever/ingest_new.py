@@ -8,7 +8,7 @@ from typing import Dict, List
 
 import psycopg
 
-from retriever.hybrid_search import DB_URL, TABLE, ensure_schema, get_model
+from retriever.hybrid_search import TABLE, ensure_schema, get_db_url, get_model
 
 
 # Путь внутри контейнера (см. volume в docker-compose)
@@ -54,7 +54,7 @@ def ingest_new_tickets() -> int:
     texts = [r["text"] for r in rows]
     embeddings = model.encode(texts, normalize_embeddings=True).tolist()
 
-    with psycopg.connect(DB_URL) as conn, conn.cursor() as cur:
+    with psycopg.connect(get_db_url()) as conn, conn.cursor() as cur:
         ensure_schema(conn)
 
         # узнаём, какие issue_key уже есть

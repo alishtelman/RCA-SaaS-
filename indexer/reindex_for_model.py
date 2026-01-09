@@ -5,7 +5,7 @@ from sentence_transformers import SentenceTransformer
 from pathlib import Path
 from utils.models import load_st_model, doc_prefix
 
-DB_URL = os.environ.get("DB_URL", "postgresql://rag:ragpass@localhost:5432/ragdb")
+DB_URL = os.environ.get("DB_URL")
 
 # --- add below imports ---
 def _doc_prefix(model_name: str) -> str:
@@ -43,6 +43,8 @@ def ensure_table(conn, model_name, dim):
     return tbl
 
 def reindex(model_name):
+    if not DB_URL:
+        raise RuntimeError("DB_URL environment variable is required")
     print(f"[INFO] Using model: {model_name}")
     try:
         m = SentenceTransformer(args.model, device="cpu", trust_remote_code=True)

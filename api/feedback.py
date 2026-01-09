@@ -7,7 +7,7 @@ import psycopg
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
-from retriever.hybrid_search import DB_URL  # используем тот же DSN
+from retriever.hybrid_search import get_db_url  # используем тот же DSN
 
 
 router = APIRouter(prefix="/feedback", tags=["feedback"])
@@ -54,7 +54,7 @@ def create_feedback(payload: FeedbackIn):
     Запись одного фидбэка от оператора.
     """
     try:
-        with psycopg.connect(DB_URL) as conn, conn.cursor() as cur:
+        with psycopg.connect(get_db_url()) as conn, conn.cursor() as cur:
             ensure_feedback_schema(conn)
             cur.execute(
                 """
@@ -92,7 +92,7 @@ def get_feedback_stats():
     - сколько из них полезных
     - доля полезных ответов
     """
-    with psycopg.connect(DB_URL) as conn, conn.cursor() as cur:
+    with psycopg.connect(get_db_url()) as conn, conn.cursor() as cur:
         ensure_feedback_schema(conn)
 
         cur.execute("SELECT COUNT(*) FROM feedback;")

@@ -7,12 +7,19 @@ from typing import Dict, List, Optional, Tuple
 
 import psycopg
 
-DB_URL = os.getenv("DB_URL", "postgresql://rag:ragpass@postgres:5432/ragdb")
+DB_URL = os.getenv("DB_URL")
 EMB_MODEL = os.getenv("EMBEDDING_MODEL", "intfloat/multilingual-e5-small")
 TOP_K_DEFAULT = int(os.getenv("TOP_K", 5))
 TABLE = os.getenv("RETR_TABLE", "documents")
 
 _model = None  # ленивое кэширование
+
+
+def get_db_url() -> str:
+    db_url = os.getenv("DB_URL")
+    if not db_url:
+        raise RuntimeError("DB_URL environment variable is required")
+    return db_url
 
 
 class NoDocumentsError(RuntimeError):
@@ -176,7 +183,7 @@ def search(
 
     combined: Dict[str, Dict[str, object]] = {}
 
-    with psycopg.connect(DB_URL) as conn:
+    with psycopg.connect(get_db_url()) as conn:
         ensure_schema(conn)
 
         if _count_documents(conn) == 0:

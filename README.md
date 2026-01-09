@@ -14,8 +14,8 @@
 - **tests/** — вспомогательные smoke/утилиты для проверки поиска и анонимизации.
 
 ## Быстрый старт через Docker Compose
-1. Подготовьте файл `.env` (переменные по умолчанию уже прописаны в коде):
-   - `DB_URL` — строка подключения к Postgres с `pgvector` (по умолчанию `postgresql://rag:ragpass@postgres:5432/ragdb`).
+1. Подготовьте файл `.env`:
+   - `DB_URL` — строка подключения к Postgres с `pgvector` (например, `postgresql://USER:PASSWORD@postgres:5432/DB`).
    - `EMBEDDING_MODEL` — модель sentence-transformers (по умолчанию `intfloat/multilingual-e5-small`).
    - `LLM_MODEL_PATH` и `LLM_REPHRASE_MODEL_PATH` — пути к GGUF моделям внутри контейнера API.
    - Дополнительно: `API_PORT`, `TOP_K`, `RETR_TABLE`, `APP_TITLE` и др.

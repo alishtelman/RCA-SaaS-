@@ -8,7 +8,7 @@ import psycopg
 from sentence_transformers import SentenceTransformer
 
 # читаем из окружения; внутри docker хост БД = "postgres"
-DB_URL = os.getenv("DB_URL", "postgresql://rag:ragpass@postgres:5432/ragdb")
+DB_URL = os.getenv("DB_URL")
 EMB_MODEL = os.getenv("EMBEDDING_MODEL", "intfloat/multilingual-e5-small")
 ANON_DIR = Path("data/anonymized")
 
@@ -75,6 +75,8 @@ def make_snippet(s: str, n=220) -> str:
 
 
 def main():
+    if not DB_URL:
+        raise RuntimeError("DB_URL environment variable is required")
     print(f"[INFO] loading model: {EMB_MODEL}")
     model = SentenceTransformer(EMB_MODEL, device="cpu")
     dim = model.get_sentence_embedding_dimension()

@@ -17,7 +17,7 @@ except ModuleNotFoundError:  # pragma: no cover - optional dependency
     psycopg = None
 
 
-DB_URL = os.getenv("DB_URL", "postgresql://rag:ragpass@localhost:5432/ragdb")
+DB_URL = os.getenv("DB_URL")
 ANONYMIZED_DIR = Path("data/anonymized")
 
 
@@ -129,6 +129,9 @@ def test_anonymized_documents_table() -> None:
 
     if psycopg is None:
         pytest.skip("psycopg not installed")
+
+    if not DB_URL:
+        pytest.skip("DB_URL is not set")
 
     try:
         with psycopg.connect(DB_URL) as conn, conn.cursor() as cur:

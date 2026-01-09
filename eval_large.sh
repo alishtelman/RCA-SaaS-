@@ -2,7 +2,10 @@
 set -euo pipefail
 
 # --- конфиг ---
-: "${DB_URL:=postgresql://rag:ragpass@localhost:5432/ragdb}"
+if [[ -z "${DB_URL:-}" ]]; then
+  echo "❌ DB_URL не задан. Укажите его через переменные окружения или .env"
+  exit 1
+fi
 export DB_URL
 export CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:--1}
 VENV_PY="./.venv/bin/python"
