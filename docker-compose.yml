@@ -23,11 +23,16 @@ services:
       - "${API_PORT:-8080}:8080"
     env_file:
       - .env
+    environment:
+      - SERVICE_DESK_API_KEY=${SERVICE_DESK_API_KEY}
+      - NEW_TICKETS_DIR=${NEW_TICKETS_DIR}
+      - SD_MAX_BATCH=${SD_MAX_BATCH}
+      - SD_MAX_TEXT_LEN=${SD_MAX_TEXT_LEN}
     depends_on:
       - postgres
     restart: unless-stopped
     volumes:
-      - ./data/new_tickets:/data/new_tickets:ro
+      - ./data/new_tickets:/app/data/new_tickets
       - ./models:/app/models:ro
     healthcheck:
       test: ["CMD-SHELL", "curl -fsS http://localhost:8080/readyz || exit 1"]
