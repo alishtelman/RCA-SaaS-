@@ -12,6 +12,7 @@ from llm.generator import generate
 from api.utils.formatter import to_structured
 from api.manage import router as manage_router
 from api.feedback import router as feedback_router
+from api.routes.servicedesk import router as servicedesk_router
 
 
 def _load_postprocess_func():
@@ -158,3 +159,4 @@ def readyz():
 
 app.include_router(manage_router)
 app.include_router(feedback_router)
+app.include_router(servicedesk_router)
