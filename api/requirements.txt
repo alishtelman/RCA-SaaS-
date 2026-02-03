@@ -1,16 +1,14 @@
+numpy==1.26.4
 fastapi
 uvicorn[standard]
 psycopg[binary]
 pgvector
-sentence-transformers
-numpy
-pandas
-openpyxl
 requests
 httpx
 jinja2
 python-dotenv
 python-multipart
+openpyxl
 
 # llama.cpp backend (GGUF local)
 llama-cpp-python==0.3.7

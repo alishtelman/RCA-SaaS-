@@ -1,0 +1,48 @@
+{
+  "updated_at": "2026-02-02 15:21:00",
+  "created_at": "2026-02-02 15:21:00",
+  "sc_uuid": "serviceCall$1636948457",
+  "issue_key": "RP4948876",
+  "state": "waitLine",
+  "route": "BCC.KZ/ Переводы",
+  "slm_service": "Мобильные приложения",
+  "priority": "(4) Низкий",
+  "responsible_team": "Remote Channels",
+  "client_employee": "Тельман Алишер Нурланулы",
+  "client_phone": "+77085323409",
+  "client_email": "alisher.telman@bcc.kz",
+  "registration_date": "2026.02.02 20:20:08",
+  "creation_date": "2026.02.02 20:20:08",
+  "description_plain": "Билал тестовый запрос&nbsp;&nbsp;&nbsp;&nbsp;",
+  "tv_Номер телефона клиента:": "+7 (701) 381-08-18",
+  "tv_Тип обслуживание клиента": "Традиционное обслуживание",
+  "tv_ИИН клиента:": "980504300111",
+  "tv_ФИО клиента:": "Муссалини Билалидини",
+  "tv_Укажите тип ошибки": "SMS/Push уведомления",
+  "events": [
+    {
+      "ts": "2026-02-02 15:21:00",
+      "state": "waitLine",
+      "route": "BCC.KZ/ Переводы",
+      "priority": "(4) Низкий",
+      "responsible_team": "Remote Channels",
+      "description_plain": "Билал тестовый запрос&nbsp;&nbsp;&nbsp;&nbsp;"
+    },
+    {
+      "ts": "2026-02-02 15:21:00",
+      "state": "waitLine",
+      "route": "",
+      "priority": "",
+      "responsible_team": "Remote Channels",
+      "description_plain": ""
+    },
+    {
+      "ts": "2026-02-02 15:21:00",
+      "state": "waitLine",
+      "route": "BCC.KZ/ Переводы",
+      "priority": "(4) Низкий",
+      "responsible_team": "Remote Channels",
+      "description_plain": "Билал тестовый запрос&nbsp;&nbsp;&nbsp;&nbsp;"
+    }
+  ]
+}

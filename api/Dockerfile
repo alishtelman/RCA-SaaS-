@@ -1,6 +1,14 @@
 # syntax=docker/dockerfile:1
 FROM python:3.11-slim
 
+ARG http_proxy
+ARG https_proxy
+ARG no_proxy
+
+ENV http_proxy=${http_proxy}
+ENV https_proxy=${https_proxy}
+ENV no_proxy=${no_proxy}
+
 WORKDIR /app
 
 # нужно для llama-cpp-python, если будет сборка из исходников

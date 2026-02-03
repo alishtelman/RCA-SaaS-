@@ -1,0 +1,40 @@
+{
+  "updated_at": "2026-02-01 07:07:00",
+  "created_at": "2026-02-01 07:07:00",
+  "sc_uuid": "serviceCall$1636643233",
+  "issue_key": "RP4948827",
+  "state": "waitLine",
+  "route": "BCC.KZ/ Переводы",
+  "slm_service": "Мобильные приложения",
+  "priority": "(4) Низкий",
+  "responsible_team": "Remote Channels",
+  "client_employee": "Тельман Алишер Нурланулы",
+  "client_phone": "+77085323409",
+  "client_email": "alisher.telman@bcc.kz",
+  "registration_date": "2026.02.01 12:06:29",
+  "creation_date": "2026.02.01 12:06:29",
+  "description_plain": "Клиент не может совершить п2п перевод",
+  "tv_ИИН клиента:": "890203300111",
+  "tv_ФИО клиента:": "Исаев Иван Рафикович",
+  "tv_Укажите тип ошибки": "Сброс пароля",
+  "tv_Номер телефона клиента:": "+7 (701) 433-24-23",
+  "tv_Тип обслуживание клиента": "Традиционное обслуживание",
+  "events": [
+    {
+      "ts": "2026-02-01 07:07:00",
+      "state": "waitLine",
+      "route": "BCC.KZ/ Переводы",
+      "priority": "(4) Низкий",
+      "responsible_team": "Remote Channels",
+      "description_plain": "Клиент не может совершить п2п перевод"
+    },
+    {
+      "ts": "2026-02-01 07:07:00",
+      "state": "waitLine",
+      "route": "",
+      "priority": "",
+      "responsible_team": "Remote Channels",
+      "description_plain": ""
+    }
+  ]
+}
